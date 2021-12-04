@@ -1,5 +1,6 @@
 import bigints
 from strutils import parse_int
+import pow_mod
 
 const
     clear_block_size = 16 # How many bytes in a cleartext block
@@ -28,21 +29,6 @@ proc int_to_block[L: static[int]](big_int: BigInt): Block[L] =
         var r: BigInt
         (big_int, r) = big_int.divmod(2.init_big_int.pow(8))
         result[L-i-1] = r.to_string.parse_int.byte
-
-proc pow_mod(base, exp, modulus: BigInt): BigInt =
-    result = 1.init_big_int
-
-    var
-        n = base
-        exp = exp
-
-    while exp > 0.init_big_int:
-        if (exp and 1.init_big_int) != 0.init_big_int:
-            result *= n
-        n = (n * n) mod modulus
-        exp = exp shr 1
-
-    result = result mod modulus
 
 func string_to_bytes(str: string): seq[byte] =
   @(str.to_open_array_byte(0, str.high))
